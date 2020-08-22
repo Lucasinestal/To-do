@@ -1,10 +1,12 @@
-const Datastore = require('nedb'), db = new Datastore({ filename: '../todos.db', autoload: true});
+const Datastore = require('nedb'), db = new Datastore({ filename: 'todos.db', autoload: true});
+const controller = require("../controllers/todo");
+
 
 getAll = () => {
     return new Promise ((resolve, reject) => {
         db.find({}, function(err, docs){
             if(err){
-                resolve(err)
+                reject(err)
             } else {
                 resolve(docs)
             }
@@ -12,13 +14,21 @@ getAll = () => {
     })
 }
 
-createItem = () => {
-    todoItem = {
-        title: "Snickra ny säng",
-        done: false
-    }
+getItemById = (id) => {
     return new Promise ((resolve, reject) => {
-        db.insert(todoItem, function (err, docs){
+        db.findOne({ _id: id }, function (err, docs) {
+            if (err) {
+                res.send('Someting went wrong!');
+            } else {
+                resolve(docs);
+            }
+        })
+    })
+}
+
+createItem = (newTodo) => {
+    return new Promise ((resolve, reject) => {
+        db.insert(newTodo, function (err, docs){
             if(err){
                 reject(err);
             } else{
@@ -28,4 +38,59 @@ createItem = () => {
     })
 }
 
-createItem();
+updateItem = (id, body) => {
+    return new Promise ((resolve, reject) => {
+        db.update({ _id: id }, { $set: { title: body.title, done: true } }, { multi: true }, function (err, numReplaced) {
+            if (err) {
+                res.send('Someting went wrong!');
+            } else {
+                db.find({ _id: id }, function (err, docs) {
+                    resolve(docs);
+                });
+            }
+        })
+    })
+}
+
+deleteItem = (id) => {
+    return new Promise ((resolve, reject) => {
+        db.remove({ _id: id }, function (err, numDeleted){
+            if (err){
+                reject(err)
+            } else {
+                resolve(numDeleted)
+            }
+        })
+    })
+}
+
+checkItem = (id) => {
+    return new Promise ((resolve, reject) => {
+        db.update({ _id: id }, { $set: { done: true } },  function (err, numReplaced){
+            if(err){
+                reject(err);
+            } else{
+                db.find({_id: id}, function (err, docs){
+                    resolve(docs);
+                })
+            }
+    })
+})
+}
+
+uncheckItem = (id) => {
+    return new Promise ((resolve, reject) => {
+        db.update({_id: id},{ $set: { done: false} }, function (err, numReplaced){
+            if(err){
+                reject(err);
+            } else{
+                db.find({_id: id}, function (err, docs){
+                    resolve(docs);
+                })
+            }
+        })
+    })
+}
+
+
+module.exports = { getAll, getItemById, createItem, updateItem, deleteItem, checkItem, uncheckItem }
