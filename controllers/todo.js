@@ -30,7 +30,7 @@ exports.updateTodo = async (req,res) => {
 exports.deleteTodo = async (req, res) => {
     const id = req.params.id;
     const deletedTodo = await model.deleteItem(id);
-    res.send(deletedTodo);
+    res.send("Todo with ID: " + id + " was succesfully deleted");
 }
 
 exports.checkTodo = async (req, res) => {

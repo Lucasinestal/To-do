@@ -12,7 +12,7 @@ router.post('/create', jsonParser, controller.createTodo);
 
 router.post('/edit/:id', jsonParser, controller.updateTodo);
 
-router.post('/delete/:id', jsonParser, controller.updateTodo);
+router.post('/delete/:id', jsonParser, controller.deleteTodo);
 
 router.post('/check/:id', jsonParser, controller.checkTodo);
 
