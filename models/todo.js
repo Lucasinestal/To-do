@@ -1,6 +1,4 @@
 const Datastore = require('nedb'), db = new Datastore({ filename: 'todos.db', autoload: true});
-const controller = require("../controllers/todo");
-
 
 getAll = () => {
     return new Promise ((resolve, reject) => {
@@ -18,7 +16,7 @@ getItemById = (id) => {
     return new Promise ((resolve, reject) => {
         db.findOne({ _id: id }, function (err, docs) {
             if (err) {
-                res.send('Someting went wrong!');
+                reject(err);
             } else {
                 resolve(docs);
             }
@@ -42,7 +40,7 @@ updateItem = (id, body) => {
     return new Promise ((resolve, reject) => {
         db.update({ _id: id }, { $set: { title: body.title, done: true } }, { multi: true }, function (err, numReplaced) {
             if (err) {
-                res.send('Someting went wrong!');
+                reject(err);
             } else {
                 db.find({ _id: id }, function (err, docs) {
                     resolve(docs);
@@ -74,8 +72,8 @@ checkItem = (id) => {
                     resolve(docs);
                 })
             }
+        })
     })
-})
 }
 
 uncheckItem = (id) => {
