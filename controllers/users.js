@@ -34,5 +34,11 @@ deleteUser = async (req, res) => {
     res.send("Todo with ID: " + id + " was succesfully deleted");
 }
 
+loginUser = async (req, res) => {
+    const loginAttempt = req.body;
+    const user = await model.loginUser(loginAttempt);
+    res.send(user); 
+}
 
-module.exports = {getAllUsers, getUser, createUser, updateUser, deleteUser}
+
+module.exports = {getAllUsers, getUser, createUser, updateUser, deleteUser, loginUser}

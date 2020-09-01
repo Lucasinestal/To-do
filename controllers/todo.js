@@ -8,14 +8,19 @@ getAllTodos = async (req,res) => {
 getTodo = async (req,res) => {
     const id = req.params.id;
     const todoItem = await model.getItemById(id);
-    res.send(todoItem);
+    if(req.user.id === todoItem.usersId){
+        res.send(todoItem);
+        
+    } else{
+        res.sendStatus(401);
+    }
 }
 
 createTodo = async (req,res) => {
     const newTodo = {
         title: req.body.title,
         done: false,
-        usersId
+        usersId: req.user.id
     }
     const createdTodo = await model.createItem(newTodo);
     res.send(createdTodo);

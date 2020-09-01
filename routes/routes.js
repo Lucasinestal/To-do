@@ -3,19 +3,20 @@ const router = express.Router();
 const todoController = require('../controllers/todo');
 const usersController = require('../controllers/users');
 const bodyParser = require('body-parser');
+const {auth} = require('../middlewares/auth')
 const jsonParser = bodyParser.json();
 
 // todo routes
 
-router.get('/todos', jsonParser, todoController.getAllTodos);
+router.get('/todos', jsonParser,auth, todoController.getAllTodos);
 
-router.get('/todos/:id', jsonParser, todoController.getTodo);
+router.get('/todos/:id', jsonParser,auth, todoController.getTodo);
 
-router.post('/todos/create', jsonParser, todoController.createTodo);
+router.post('/todos/create', jsonParser,auth, todoController.createTodo);
 
 router.patch('/todos/edit/:id', jsonParser, todoController.updateTodo);
 
-router.delete('/todos/delete/:id', jsonParser, todoController.deleteTodo);
+router.delete('/todos/delete/:id', jsonParser,auth, todoController.deleteTodo);
 
 router.post('/todos/check/:id', jsonParser, todoController.checkTodo);
 
@@ -32,5 +33,7 @@ router.post('/users/create', jsonParser, usersController.createUser);
 router.patch('/users/edit/:id', jsonParser, usersController.updateUser);
 
 router.delete('/users/delete/:id', jsonParser, usersController.deleteUser);
+
+router.post('/auth', jsonParser, usersController.loginUser);
 
 module.exports = router
